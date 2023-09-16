@@ -1,0 +1,45 @@
+run:
+  timeout: 5m
+
+linters:
+  disable:
+    - errcheck
+  enable:
+    - goimports
+    - govet
+    - staticcheck
+    - gosimple
+    - unused
+    - unconvert
+    - goconst
+    - prealloc
+    - unparam
+    - bodyclose
+    - gocritic
+    - ineffassign
+    - typecheck
+    - exportloopref
+    - gosec
+
+linters-settings:
+  gocritic:
+    disabled-checks:
+      - appendAssign # Too many false positives
+      - assignOp # Maybe worth adding, but likely not worth the noise
+      - commentFormatting # No strong benefit
+      - deprecatedComment # Unnecessary
+      - exitAfterDefer # Only occurs in auxiliary tools
+      - ifElseChain # Noisy for not much gain
+      - singleCaseSwitch # Noisy for not much gain
+      - captLocal # vary naming
+  gosec:
+    excludes:
+      - G104 # errors unhadled, but not worth the noise
+      # - G103 # unsafe audited, but noise for coverting string to []byte
+  staticcheck:
+    checks:
+      - "-SA1029"
+issues:
+  exclude-use-default: false
+  max-issues-per-linter: 0
+  max-same-issues: 0
