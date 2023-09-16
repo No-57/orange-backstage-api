@@ -2,7 +2,9 @@ package app
 
 import (
 	"context"
+	"fmt"
 	"io"
+	"orange-backstage-api/app/store"
 	"orange-backstage-api/infra/config"
 	"os"
 	"path/filepath"
@@ -16,9 +18,10 @@ import (
 type App struct {
 	Name string
 
-	ctx context.Context
-	cfg config.App
-	log Logger
+	ctx   context.Context
+	cfg   config.App
+	log   Logger
+	store *store.Store
 }
 
 func New(ctx context.Context, name string, cfg config.App) (*App, error) {
@@ -30,6 +33,12 @@ func New(ctx context.Context, name string, cfg config.App) (*App, error) {
 	app.log = app.newLogger()
 	ctx = app.log.WithContext(ctx)
 	app.ctx = ctx
+
+	store, err := store.New()
+	if err != nil {
+		return nil, fmt.Errorf("new store: %w", err)
+	}
+	app.store = store
 
 	return app, nil
 }
