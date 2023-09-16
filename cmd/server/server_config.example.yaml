@@ -1,0 +1,20 @@
+server:
+  run_mode: release
+  port: 80
+  read_timeout: 30s
+  wrtie_timeout: 30s
+  cert_file_path:
+  key_file_path:
+  jwt:
+    secret: "this is a secret"
+    access_token_expire: 30m
+    refresh_token_expire: 60m
+
+log:
+  level: info
+  file_name: ./app.log
+  max_size: 10
+  max_age: 7
+  max_backups: 10
+  compress: true
+  console_debug: false
