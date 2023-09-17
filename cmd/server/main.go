@@ -61,16 +61,19 @@ func main() {
 	}
 
 	rootCtx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
 	app, err := app.New(rootCtx, AppName, appCfg)
 	if err != nil {
 		log.Fatalf("failed to create app: %v", err)
 	}
 
-	app.Run()
+	if err := app.Run(); err != nil {
+		log.Fatalf("failed to run app: %v", err)
+	}
 
 	// graceful shutdown
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, os.Interrupt, syscall.SIGTERM, syscall.SIGINT)
 	<-quit
-	cancel()
 }
