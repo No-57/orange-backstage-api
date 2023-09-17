@@ -46,6 +46,7 @@ func main() {
 	viper.SetConfigType("yaml")
 	viper.AutomaticEnv()
 
+	appCfg := defaultCfg
 	if err := viper.ReadInConfig(); err != nil {
 		var notfoundErr viper.ConfigFileNotFoundError
 		if errors.As(err, &notfoundErr) {
@@ -53,11 +54,10 @@ func main() {
 		} else {
 			log.Fatalf("Error reading config file: %v", err)
 		}
-	}
-
-	appCfg := defaultCfg
-	if err := viper.Unmarshal(&appCfg); err != nil {
-		log.Fatalf("Unable to decode into struct： %v", err)
+	} else {
+		if err := viper.Unmarshal(&appCfg); err != nil {
+			log.Fatalf("Unable to decode into struct： %v", err)
+		}
 	}
 
 	rootCtx, cancel := context.WithCancel(context.Background())
