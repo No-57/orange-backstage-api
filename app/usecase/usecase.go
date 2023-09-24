@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"orange-backstage-api/app/store"
+	"orange-backstage-api/app/usecase/account"
 	"orange-backstage-api/app/usecase/auth"
 	"orange-backstage-api/infra/config"
 )
@@ -9,7 +10,8 @@ import (
 type Usecase struct {
 	store *store.Store
 
-	Auth *auth.Usecase
+	Auth    *auth.Usecase
+	Account *account.Usecase
 }
 
 type Config struct {
@@ -23,5 +25,7 @@ func New(store *store.Store, config Config) *Usecase {
 		Auth: auth.New(store, auth.Param{
 			JWT: config.JWT,
 		}),
+
+		Account: account.New(store),
 	}
 }

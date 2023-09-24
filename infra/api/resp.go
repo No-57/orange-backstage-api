@@ -35,32 +35,32 @@ type ErrResp struct {
 	Extra string `json:"extra,omitempty"`
 }
 
-type Resp struct {
+type resp struct {
 	c *gin.Context
 
 	done   atomic.Bool
 	logger *zerolog.Logger
 }
 
-func NewResp(c *gin.Context, log zerolog.Logger) *Resp {
-	return &Resp{
+func newResp(c *gin.Context, log zerolog.Logger) *resp {
+	return &resp{
 		c:      c,
 		logger: &log,
 	}
 }
 
-func (r *Resp) OK() {
+func (r *resp) OK() {
 	r.send(http.StatusOK, CodeResp{Code: CodeOK})
 }
 
-func (r *Resp) Data(data any) {
+func (r *resp) Data(data any) {
 	r.send(http.StatusOK, DataResp{
 		CodeResp: CodeResp{Code: CodeOK},
 		Data:     data,
 	})
 }
 
-func (r *Resp) DataWithTotal(data []any, total uint64) {
+func (r *resp) DataWithTotal(data []any, total uint64) {
 	r.send(http.StatusOK, ListDataResp{
 		DataResp: DataResp{
 			CodeResp: CodeResp{Code: CodeOK},
@@ -70,7 +70,7 @@ func (r *Resp) DataWithTotal(data []any, total uint64) {
 	})
 }
 
-func (r *Resp) Err(err error) {
+func (r *resp) Err(err error) {
 	switch {
 	case errors.Is(err, gorm.ErrRecordNotFound):
 		r.sendErr(http.StatusBadRequest, CodeInvalidParam, err)
@@ -80,7 +80,19 @@ func (r *Resp) Err(err error) {
 	r.sendErr(http.StatusInternalServerError, CodeUnknown, err)
 }
 
-func (r *Resp) DBErr(err error) {
+func (r *resp) Forbidden(err error) {
+	r.sendErr(http.StatusForbidden, CodeForbidden, err)
+}
+
+func (r *resp) Unauthorized(err error) {
+	r.sendErr(http.StatusUnauthorized, CodeInvalidParam, err)
+}
+
+func (r *resp) ExpiredToken(err error) {
+	r.sendErr(http.StatusUnauthorized, CodeTokenExpired, err)
+}
+
+func (r *resp) DBErr(err error) {
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		r.sendErr(http.StatusBadRequest, CodeInvalidParam, err)
 		return
@@ -89,11 +101,11 @@ func (r *Resp) DBErr(err error) {
 	r.sendErr(http.StatusInternalServerError, CodeUnknown, err)
 }
 
-func (r *Resp) InvalidParam(err error) {
+func (r *resp) InvalidParam(err error) {
 	r.sendErr(http.StatusBadRequest, CodeInvalidParam, err)
 }
 
-func (r *Resp) Unknown(err error) {
+func (r *resp) Unknown(err error) {
 	r.sendErr(http.StatusInternalServerError, CodeUnknown, err)
 }
 
@@ -101,7 +113,7 @@ func (r *Resp) Unknown(err error) {
 // Finisher
 //
 
-func (r *Resp) sendErr(httpCode int, code Code, err error) {
+func (r *resp) sendErr(httpCode int, code Code, err error) {
 	if err != nil && httpCode >= http.StatusBadRequest {
 		r.c.Errors = append(r.c.Errors, &gin.Error{
 			Err:  err,
@@ -124,7 +136,7 @@ func (r *Resp) sendErr(httpCode int, code Code, err error) {
 	})
 }
 
-func (r *Resp) send(httpCode int, payload any) {
+func (r *resp) send(httpCode int, payload any) {
 	if r.done.Swap(true) {
 		r.logger.Warn().
 			Int("http_code", httpCode).

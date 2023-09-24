@@ -17,6 +17,10 @@ func New(usecase *auth.Usecase) *Router {
 	}
 }
 
+func (r *Router) Register(ginR gin.IRouter) {
+	ginR.POST("/login", r.Login)
+}
+
 type LoginPayload struct {
 	Target   string `json:"target" binding:"required"`
 	Password string `json:"password" binding:"required"`
@@ -49,8 +53,4 @@ func (r Router) Login(c *gin.Context) {
 		AccessToken:  token.AccessToken,
 		RefreshToken: token.RefreshToken,
 	})
-}
-
-func (r *Router) Register(ginR gin.IRouter) {
-	ginR.POST("/login", r.Login)
 }

@@ -1,6 +1,8 @@
 package account
 
 import (
+	"errors"
+	"fmt"
 	"orange-backstage-api/infra/util/convert"
 	"strconv"
 	"time"
@@ -43,4 +45,39 @@ func (a Account) GenJWT(secret []byte, expiredTime time.Duration) (string, error
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	return token.SignedString(secret)
+}
+
+var (
+	ErrExpired = errors.New("token is expired")
+	ErrParse   = errors.New("token parse error")
+)
+
+func ParseTokenWithSecret(secret []byte, token string) (*Claims, error) {
+	tokenClaims, err := jwt.ParseWithClaims(token, &Claims{}, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+		}
+
+		return secret, nil
+	})
+	if err != nil {
+		var ve *jwt.ValidationError
+		if errors.As(err, &ve) {
+			switch {
+			case ve.Errors&(jwt.ValidationErrorExpired|jwt.ValidationErrorNotValidYet) != 0:
+				return nil, ErrExpired
+			default:
+				return nil, ErrParse
+			}
+		}
+
+		return nil, err
+	}
+
+	claims, ok := tokenClaims.Claims.(*Claims)
+	if ok && tokenClaims.Valid {
+		return claims, nil
+	}
+
+	return nil, ErrParse
 }

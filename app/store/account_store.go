@@ -21,3 +21,13 @@ func (a *Account) GetByEmailOrName(ctx context.Context, val string) (*account.Ac
 	}
 	return record, nil
 }
+
+func (a *Account) GetByID(ctx context.Context, ID uint64) (*account.Account, error) {
+	var record *account.Account
+	if err := a.db.WithContext(ctx).
+		Where(account.Account{ID: ID}).
+		Take(&record).Error; err != nil {
+		return nil, err
+	}
+	return record, nil
+}

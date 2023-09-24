@@ -8,7 +8,6 @@ import (
 	"orange-backstage-api/app/store"
 	"orange-backstage-api/app/store/auth"
 	"orange-backstage-api/infra/config"
-	"orange-backstage-api/infra/util/convert"
 
 	"github.com/google/uuid"
 )
@@ -53,7 +52,7 @@ func (u *Usecase) Login(
 
 	jwtCfg := u.param.JWT
 	accessToken, err := account.GenJWT(
-		convert.StrToBytes(jwtCfg.Secret), jwtCfg.AccessTokenExpire,
+		jwtCfg.SecretBytes(), jwtCfg.AccessTokenExpire,
 	)
 	if err != nil {
 		return nil, fmt.Errorf("gen access token: %w", err)

@@ -8,6 +8,7 @@ Host: {{host}}
 
 ###
 
+# @name login
 POST {{v1}}/login
 Host: {{host}}
 
@@ -15,3 +16,14 @@ Host: {{host}}
   "target": "admin",
   "password": "admin"
 }
+
+
+###
+
+@token = {{login.response.body.data.access_token}}
+
+###
+
+GET {{v1}}/self
+Host: {{host}}
+Authorization: Bearer {{token}}

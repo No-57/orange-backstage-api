@@ -2,10 +2,12 @@ package router
 
 import (
 	"context"
+	"orange-backstage-api/app/router/account"
 	"orange-backstage-api/app/router/auth"
 	"orange-backstage-api/app/router/middleware"
 	"orange-backstage-api/app/usecase"
 	"orange-backstage-api/infra/api"
+	"orange-backstage-api/infra/config"
 	"time"
 
 	"github.com/gin-contrib/gzip"
@@ -16,11 +18,13 @@ type Router struct {
 	ctx     context.Context
 	version string
 
-	Auth *auth.Router
+	auth    *auth.Router
+	account *account.Router
 }
 
 type Param struct {
 	Version string
+	JWT     config.JWT
 }
 
 func New(ctx context.Context, usecase *usecase.Usecase, param Param) *Router {
@@ -28,7 +32,10 @@ func New(ctx context.Context, usecase *usecase.Usecase, param Param) *Router {
 		ctx:     ctx,
 		version: param.Version,
 
-		Auth: auth.New(usecase.Auth),
+		auth: auth.New(usecase.Auth),
+		account: account.New(usecase.Account, account.Config{
+			JWT: param.JWT,
+		}),
 	}
 }
 
@@ -38,7 +45,8 @@ func (r *Router) Register(ginR gin.IRouter) {
 
 	ver.GET("/health", health)
 
-	r.Auth.Register(ver)
+	r.auth.Register(ver)
+	r.account.Register(ver)
 }
 
 func health(c *gin.Context) {

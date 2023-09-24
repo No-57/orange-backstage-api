@@ -57,7 +57,7 @@ func Logger(ctx context.Context) gin.HandlerFunc {
 			Str("user_agent", c.Request.UserAgent()).
 			Str("query", rawQuery).
 			Int("status", status).
-			Time("callTime", end).
+			Time("call_time", end).
 			Dur("duration", end.Sub(start)).
 			Str("errors", c.Errors.ByType(gin.ErrorTypePrivate).String())
 
