@@ -1,0 +1,17 @@
+@host=localhost:8080
+@v1=/api/v1
+
+###
+
+GET {{v1}}/health
+Host: {{host}}
+
+###
+
+POST {{v1}}/login
+Host: {{host}}
+
+{
+  "target": "admin",
+  "password": "admin"
+}

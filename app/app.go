@@ -7,6 +7,7 @@ import (
 	"orange-backstage-api/app/router"
 	"orange-backstage-api/app/server"
 	"orange-backstage-api/app/store"
+	"orange-backstage-api/app/usecase"
 	"orange-backstage-api/infra/config"
 	"os"
 	"path/filepath"
@@ -45,7 +46,11 @@ func New(ctx context.Context, name string, cfg config.App) (*App, error) {
 	}
 	app.store = store
 
-	router := router.New(router.Param{
+	usecase := usecase.New(app.store, usecase.Config{
+		JWT: cfg.Server.JWT,
+	})
+
+	router := router.New(app.ctx, usecase, router.Param{
 		Version: "v1",
 	})
 
