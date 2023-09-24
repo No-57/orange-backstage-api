@@ -17,13 +17,23 @@ Host: {{host}}
   "password": "admin"
 }
 
-
 ###
 
-@token = {{login.response.body.data.access_token}}
+@aToken = {{login.response.body.data.access_token}}
+@rToken = {{login.response.body.data.refresh_token}}
 
 ###
 
 GET {{v1}}/self
 Host: {{host}}
-Authorization: Bearer {{token}}
+Authorization: Bearer {{aToken}}
+
+###
+
+PATCH {{v1}}/token
+Host: {{host}}
+Authorization: Bearer {{aToken}}
+
+{
+  "refresh_token": "{{rToken}}"
+}

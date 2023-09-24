@@ -19,6 +19,7 @@ func New(usecase *auth.Usecase) *Router {
 
 func (r *Router) Register(ginR gin.IRouter) {
 	ginR.POST("/login", r.Login)
+	ginR.PATCH("/token", r.UpdateToken)
 }
 
 type LoginPayload struct {
@@ -43,6 +44,33 @@ func (r Router) Login(c *gin.Context) {
 	token, err := r.usecase.Login(api.Ctx(), auth.LoginParam{
 		Target:   payload.Target,
 		Password: payload.Password,
+	})
+	if err != nil {
+		api.Resp().Err(err)
+		return
+	}
+
+	api.Resp().Data(LoginResp{
+		AccessToken:  token.AccessToken,
+		RefreshToken: token.RefreshToken,
+	})
+}
+
+type UpdateTokenPayload struct {
+	RefreshToken string `json:"refresh_token" binding:"required"`
+}
+
+func (r Router) UpdateToken(c *gin.Context) {
+	api := api.New(c)
+
+	var payload UpdateTokenPayload
+	if err := c.ShouldBindJSON(&payload); err != nil {
+		api.Resp().InvalidParam(err)
+		return
+	}
+
+	token, err := r.usecase.UpdateToken(api.Ctx(), auth.UpdateTokenParam{
+		RToken: payload.RefreshToken,
 	})
 	if err != nil {
 		api.Resp().Err(err)
