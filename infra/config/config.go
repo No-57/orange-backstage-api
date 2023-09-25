@@ -1,6 +1,9 @@
 package config
 
-import "time"
+import (
+	"orange-backstage-api/infra/util/convert"
+	"time"
+)
 
 type App struct {
 	Server Server `mapstructure:"server"`
@@ -22,6 +25,10 @@ type JWT struct {
 	Secret             string        `mapstructure:"secret"`
 	AccessTokenExpire  time.Duration `mapstructure:"access_token_expire"`
 	RefreshTokenExpire time.Duration `mapstructure:"refresh_token_expire"`
+}
+
+func (jwt JWT) SecretBytes() []byte {
+	return convert.StrToBytes(jwt.Secret)
 }
 
 type Log struct {

@@ -4,7 +4,10 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"orange-backstage-api/app/router"
+	"orange-backstage-api/app/server"
 	"orange-backstage-api/app/store"
+	"orange-backstage-api/app/usecase"
 	"orange-backstage-api/infra/config"
 	"os"
 	"path/filepath"
@@ -12,16 +15,19 @@ import (
 	"time"
 
 	"github.com/rs/zerolog"
+	"golang.org/x/sync/errgroup"
 	"gopkg.in/natefinch/lumberjack.v2"
 )
 
 type App struct {
 	Name string
 
-	ctx   context.Context
-	cfg   config.App
-	log   Logger
-	store *store.Store
+	ctx context.Context
+	cfg config.App
+	log Logger
+
+	store  *store.Store
+	server *server.Server
 }
 
 func New(ctx context.Context, name string, cfg config.App) (*App, error) {
@@ -39,6 +45,17 @@ func New(ctx context.Context, name string, cfg config.App) (*App, error) {
 		return nil, fmt.Errorf("new store: %w", err)
 	}
 	app.store = store
+
+	usecase := usecase.New(app.store, usecase.Config{
+		JWT: cfg.Server.JWT,
+	})
+
+	router := router.New(app.ctx, usecase, router.Param{
+		Version: "v1",
+		JWT:     cfg.Server.JWT,
+	})
+
+	app.server = server.New(router, app.cfg.Server)
 
 	return app, nil
 }
@@ -107,9 +124,38 @@ func (app App) newLogger() Logger {
 	return Logger{logger}
 }
 
-func (app *App) Run() {
+func (app *App) Run() error {
 	app.log.Info().Msg("running")
 	defer app.log.Info().Msg("stopped")
 
-	// TODO: implement app running logic
+	g := &errgroup.Group{}
+
+	g.Go(func() error {
+		log := app.log.With().
+			Str("addr", app.server.Addr()).
+			Str("component", "server").
+			Logger()
+
+		log.Info().Msg("running")
+		if err := app.runServer(); err != nil {
+			return err
+		}
+		log.Info().Msg("stopped")
+
+		return nil
+	})
+
+	if err := g.Wait(); err != nil {
+		return fmt.Errorf("running app: %w", err)
+	}
+
+	return nil
+}
+
+func (app *App) runServer() error {
+	if err := app.server.Serve(); err != nil {
+		return fmt.Errorf("server serve: %w", err)
+	}
+
+	return nil
 }

@@ -1,0 +1,39 @@
+@host=localhost:8080
+@v1=/api/v1
+
+###
+
+GET {{v1}}/health
+Host: {{host}}
+
+###
+
+# @name login
+POST {{v1}}/login
+Host: {{host}}
+
+{
+  "target": "admin",
+  "password": "admin"
+}
+
+###
+
+@aToken = {{login.response.body.data.access_token}}
+@rToken = {{login.response.body.data.refresh_token}}
+
+###
+
+GET {{v1}}/self
+Host: {{host}}
+Authorization: Bearer {{aToken}}
+
+###
+
+PATCH {{v1}}/token
+Host: {{host}}
+Authorization: Bearer {{aToken}}
+
+{
+  "refresh_token": "{{rToken}}"
+}
