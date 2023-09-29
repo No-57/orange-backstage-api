@@ -42,6 +42,18 @@ type SelfResp struct {
 	UpdatedAt time.Time `json:"updated_at"`
 }
 
+// Self
+//
+//	@Summary		Get Self
+//	@Description	Get self account info
+//	@Tags			account
+//	@Accept			json
+//	@Produce		json
+//	@Security		BearerAuth
+//	@Success		200	{object}	api.DataResp{data=SelfResp}
+//	@Failure		400	{object}	api.ErrResp
+//	@Failure		500	{object}	api.ErrResp
+//	@Router			/self [get]
 func (r Router) Self(c *gin.Context) {
 	api := api.New(c)
 

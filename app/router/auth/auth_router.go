@@ -32,6 +32,18 @@ type LoginResp struct {
 	RefreshToken string `json:"refresh_token"`
 }
 
+// Login
+//
+//	@Summary		Account Login
+//	@Description	Login with email or name and password
+//	@Tags			auth
+//	@Accept			json
+//	@Produce		json
+//	@Param			data	body		LoginPayload	true	"payload"
+//	@Success		200		{object}	api.DataResp{data=LoginResp}
+//	@Failure		400		{object}	api.ErrResp
+//	@Failure		500		{object}	api.ErrResp
+//	@Router			/login [post]
 func (r Router) Login(c *gin.Context) {
 	api := api.New(c)
 
@@ -60,6 +72,19 @@ type UpdateTokenPayload struct {
 	RefreshToken string `json:"refresh_token" binding:"required"`
 }
 
+// UpdateToken
+//
+//	@Summary		Update Token
+//	@Description	Update Token with refresh token
+//	@Tags			auth
+//	@Accept			json
+//	@Produce		json
+//	@Security		BearerAuth
+//	@Param			data	body		UpdateTokenPayload	true	"payload"
+//	@Success		200		{object}	api.DataResp{data=LoginResp}
+//	@Failure		400		{object}	api.ErrResp
+//	@Failure		500		{object}	api.ErrResp
+//	@Router			/token [patch]
 func (r Router) UpdateToken(c *gin.Context) {
 	api := api.New(c)
 

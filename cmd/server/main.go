@@ -11,6 +11,8 @@ import (
 	"syscall"
 	"time"
 
+	_ "orange-backstage-api/docs"
+
 	"github.com/spf13/viper"
 )
 
@@ -39,6 +41,17 @@ var defaultCfg = config.App{
 		ConsoleDebug: false,
 	},
 }
+
+//	@title			Orange Backstage API Document
+//	@version		0.1.0
+//	@description	For Orange Backstage API Document
+//	@host			localhost:8080
+//	@BasePath		/api/v1
+
+//	@securityDefinitions.apikey	BearerAuth
+//	@in							header
+//	@name						Authorization
+//	@description				Enter the access token with the `Bearer ` prefix, e.g. "Bearer abcde12345".
 
 func main() {
 	viper.AddConfigPath("./")

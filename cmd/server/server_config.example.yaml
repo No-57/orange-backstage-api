@@ -5,6 +5,7 @@ server:
   wrtie_timeout: 30s
   cert_file_path:
   key_file_path:
+  enable_doc: true
   jwt:
     secret: "this is a secret"
     access_token_expire: 30m

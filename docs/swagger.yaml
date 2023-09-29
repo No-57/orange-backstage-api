@@ -1,0 +1,231 @@
+basePath: /api/v1
+definitions:
+  account.SelfResp:
+    properties:
+      created_at:
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  api.Code:
+    enum:
+    - 101000
+    - 101001
+    - 101002
+    - 101003
+    - 101004
+    - 102000
+    type: integer
+    x-enum-comments:
+      CodeAPINotFound: "101003"
+      CodeForbidden: "101004"
+      CodeInvalidParam: "101002"
+      CodeOK: "101000"
+      CodeTokenExpired: "102000"
+      CodeUnknown: "101001"
+    x-enum-varnames:
+    - CodeOK
+    - CodeUnknown
+    - CodeInvalidParam
+    - CodeAPINotFound
+    - CodeForbidden
+    - CodeTokenExpired
+  api.DataResp:
+    properties:
+      code:
+        allOf:
+        - $ref: '#/definitions/api.Code'
+        description: e.CodeSuccess
+        example: 101001
+      data: {}
+    type: object
+  api.ErrResp:
+    properties:
+      code:
+        allOf:
+        - $ref: '#/definitions/api.Code'
+        description: e.CodeSuccess
+        example: 101001
+      extra:
+        type: string
+      message:
+        type: string
+    type: object
+  auth.LoginPayload:
+    properties:
+      password:
+        type: string
+      target:
+        type: string
+    required:
+    - password
+    - target
+    type: object
+  auth.LoginResp:
+    properties:
+      access_token:
+        type: string
+      refresh_token:
+        type: string
+    type: object
+  auth.UpdateTokenPayload:
+    properties:
+      refresh_token:
+        type: string
+    required:
+    - refresh_token
+    type: object
+  router.health.resp:
+    properties:
+      health:
+        example: ok
+        type: string
+      time:
+        example: "2021-01-01T00:00:00+08:00"
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: For Orange Backstage API Document
+  title: Orange Backstage API Document
+  version: 0.1.0
+paths:
+  /health:
+    get:
+      consumes:
+      - application/json
+      description: Health Check
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/router.health.resp'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.ErrResp'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.ErrResp'
+      summary: Health Check
+      tags:
+      - health
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: Login with email or name and password
+      parameters:
+      - description: payload
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/auth.LoginPayload'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/api.DataResp'
+            - properties:
+                data:
+                  $ref: '#/definitions/auth.LoginResp'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.ErrResp'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.ErrResp'
+      summary: Account Login
+      tags:
+      - auth
+  /self:
+    get:
+      consumes:
+      - application/json
+      description: Get self account info
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/api.DataResp'
+            - properties:
+                data:
+                  $ref: '#/definitions/account.SelfResp'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.ErrResp'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.ErrResp'
+      security:
+      - BearerAuth: []
+      summary: Get Self
+      tags:
+      - account
+  /token:
+    patch:
+      consumes:
+      - application/json
+      description: Update Token with refresh token
+      parameters:
+      - description: payload
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/auth.UpdateTokenPayload'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/api.DataResp'
+            - properties:
+                data:
+                  $ref: '#/definitions/auth.LoginResp'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.ErrResp'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.ErrResp'
+      security:
+      - BearerAuth: []
+      summary: Update Token
+      tags:
+      - auth
+securityDefinitions:
+  BearerAuth:
+    description: Enter the access token with the `Bearer ` prefix, e.g. "Bearer abcde12345".
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
