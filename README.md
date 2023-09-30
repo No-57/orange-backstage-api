@@ -71,7 +71,13 @@
 
 ### Swagger
 
-1. Start the server in debug mode.
+1. Start the server with `enable_doc` set to `true` in `server_config.yaml`.
+
+    ```yaml
+    server:
+      enable_doc: true
+    ```
+
 2. Open the following URL in browser. The port number is the same as the one in `server_config.yaml`.
 
     ```url
