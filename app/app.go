@@ -51,8 +51,9 @@ func New(ctx context.Context, name string, cfg config.App) (*App, error) {
 	})
 
 	router := router.New(app.ctx, usecase, router.Param{
-		Version: "v1",
-		JWT:     cfg.Server.JWT,
+		Version:   "v1",
+		JWT:       cfg.Server.JWT,
+		EnableDoc: cfg.Server.EnableDoc,
 	})
 
 	app.server = server.New(router, app.cfg.Server)

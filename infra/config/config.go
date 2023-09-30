@@ -17,6 +17,7 @@ type Server struct {
 	WriteTimeout time.Duration `mapstructure:"write_timeout"`
 	CertFilePath string        `mapstructure:"cert_file_path"`
 	KeyFilePath  string        `mapstructure:"key_file_path"`
+	EnableDoc    bool          `mapstructure:"enable_doc"`
 
 	JWT JWT `mapstructure:"jwt"`
 }

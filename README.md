@@ -21,7 +21,7 @@
 
 4. Install [Go tools] in VSCode. Press `Ctrl+Shift+P` to open command palette, then type `Go: Install/Update Tools` and press `Enter`. Select all tools and click `OK`.
 
-    ![isntal go tools](doc/image/go-tools.png)
+    ![isntal go tools](docs/image/go-tools.png)
 
 5. Create `debug` folder in the root of the project.
 
@@ -59,7 +59,7 @@
 
 7. Press `F5` to start debugging. Or you can press `Ctrl+Shift+D` to open the debug panel, then click `Run` button with the config called `server`.
 
-    ![debug panel](doc/image/debug-panel.png)
+    ![debug panel](docs/image/debug-panel.png)
 
 8. Use `cURL` to test the API.
 
@@ -67,4 +67,19 @@
     $ curl -X GET http://localhost:8080/api/v1/health
 
     # {"code":101000,"data":{"health":"ok","time":"2023-09-24T18:25:12.598820633+08:00"}}
+    ```
+
+### Swagger
+
+1. Start the server with `enable_doc` set to `true` in `server_config.yaml`.
+
+    ```yaml
+    server:
+      enable_doc: true
+    ```
+
+2. Open the following URL in browser. The port number is the same as the one in `server_config.yaml`.
+
+    ```url
+    http://localhost:{port}/swagger/index.html
     ```
