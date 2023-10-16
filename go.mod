@@ -82,5 +82,5 @@ require (
 	golang.org/x/sync v0.4.0
 	golang.org/x/sys v0.13.0 // indirect
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1
-	gorm.io/gorm v1.25.4
+	gorm.io/gorm v1.25.5
 )
