@@ -40,7 +40,17 @@ func New(ctx context.Context, name string, cfg config.App) (*App, error) {
 	ctx = app.log.WithContext(ctx)
 	app.ctx = ctx
 
-	store, err := store.New()
+	store, err := store.New(store.Param{
+		Engine: store.Engine(cfg.DB.Engine),
+		Postgres: store.PostgresCfg{
+			Host:     cfg.DB.Host,
+			User:     cfg.DB.User,
+			Password: cfg.DB.Password,
+			DBName:   cfg.DB.Name,
+			Port:     cfg.DB.Port,
+		},
+		Verbose: cfg.DB.Verbose,
+	})
 	if err != nil {
 		return nil, fmt.Errorf("new store: %w", err)
 	}

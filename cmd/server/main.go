@@ -40,6 +40,10 @@ var defaultCfg = config.App{
 		Compress:     true,
 		ConsoleDebug: false,
 	},
+
+	DB: config.DB{
+		Engine: "memory",
+	},
 }
 
 //	@title			Orange Backstage API Document
