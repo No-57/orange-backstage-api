@@ -3,7 +3,7 @@ module orange-backstage-api
 go 1.21.0
 
 require (
-	github.com/google/uuid v1.3.1
+	github.com/google/uuid v1.4.0
 	github.com/rs/zerolog v1.31.0
 	github.com/swaggo/swag v1.16.2
 	golang.org/x/crypto v0.14.0
@@ -74,7 +74,7 @@ require (
 	github.com/gin-contrib/gzip v0.0.6
 	github.com/gin-contrib/requestid v0.0.6
 	github.com/gin-gonic/gin v1.9.1
-	github.com/glebarez/sqlite v1.9.0
+	github.com/glebarez/sqlite v1.10.0
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.19 // indirect
