@@ -71,7 +71,7 @@ require (
 	github.com/gin-contrib/gzip v0.0.6
 	github.com/gin-contrib/requestid v0.0.6
 	github.com/gin-gonic/gin v1.9.1
-	github.com/glebarez/sqlite v1.9.0
+	github.com/glebarez/sqlite v1.10.0
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.19 // indirect
