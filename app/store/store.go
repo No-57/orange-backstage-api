@@ -2,18 +2,13 @@ package store
 
 import (
 	"fmt"
-	"log"
 	"orange-backstage-api/app/store/account"
 	"orange-backstage-api/app/store/auth"
 	"orange-backstage-api/infra/util/convert"
-	"os"
-	"time"
 
-	"github.com/glebarez/sqlite"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
-	gormLogger "gorm.io/gorm/logger"
 )
 
 type Store struct {
@@ -23,10 +18,33 @@ type Store struct {
 	Auth    *Auth
 }
 
-func New() (*Store, error) {
-	db, err := gormDB()
+type Engine string
+
+const (
+	EnginePostgres Engine = "postgres"
+	EngineMemory   Engine = "memory"
+)
+
+type Param struct {
+	Engine   Engine
+	Postgres PostgresCfg
+	Verbose  bool
+}
+
+func New(param Param) (*Store, error) {
+	var (
+		db  *gorm.DB
+		err error
+	)
+
+	switch param.Engine {
+	case EnginePostgres:
+		db, err = newPostgres(param.Verbose, param.Postgres)
+	default:
+		db, err = newMemory(param.Verbose)
+	}
 	if err != nil {
-		return nil, fmt.Errorf("gorm db: %w", err)
+		return nil, fmt.Errorf("new db: %w", err)
 	}
 
 	if err := migrate(db); err != nil {
@@ -43,33 +61,6 @@ func New() (*Store, error) {
 		Account: &Account{db: db},
 		Auth:    &Auth{db: db},
 	}, nil
-}
-
-func gormDB() (*gorm.DB, error) {
-	db, err := gorm.Open(
-		sqlite.Open("file::memory:?cache=shared"),
-		&gorm.Config{
-			PrepareStmt: true,
-			Logger: gormLogger.New(
-				log.New(os.Stdout, "\r\n", log.LstdFlags),
-				gormLogger.Config{
-					SlowThreshold:             time.Second,
-					LogLevel:                  gormLogger.Info,
-					IgnoreRecordNotFoundError: true,
-					Colorful:                  true,
-				},
-			),
-			CreateBatchSize:                          1000,
-			DisableForeignKeyConstraintWhenMigrating: true,
-			SkipDefaultTransaction:                   true,
-			QueryFields:                              true,
-		},
-	)
-	if err != nil {
-		return nil, err
-	}
-
-	return db, nil
 }
 
 func migrate(db *gorm.DB) error {

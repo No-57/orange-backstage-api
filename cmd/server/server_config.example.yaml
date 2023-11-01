@@ -19,3 +19,11 @@ log:
   max_backups: 10
   compress: true
   console_debug: false
+
+db:
+  engine: postgres # memory, postgres
+  host: 127.0.0.1
+  port: 5432
+  name: orange
+  user: backstage
+  password:

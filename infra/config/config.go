@@ -8,6 +8,7 @@ import (
 type App struct {
 	Server Server `mapstructure:"server"`
 	Log    Log    `mapstructure:"log"`
+	DB     DB     `mapstructure:"db"`
 }
 
 type Server struct {
@@ -40,4 +41,15 @@ type Log struct {
 	MaxAge       int    `mapstructure:"max_age"`
 	Compress     bool   `mapstructure:"compress"`
 	ConsoleDebug bool   `mapstructure:"console_debug"`
+}
+
+type DB struct {
+	Engine   string `mapstructure:"engine"`
+	Host     string `mapstructure:"host"`
+	Port     string `mapstructure:"port"`
+	Name     string `mapstructure:"name"`
+	User     string `mapstructure:"user"`
+	Password string `mapstructure:"password"`
+
+	Verbose bool `mapstructure:"verbose"`
 }
