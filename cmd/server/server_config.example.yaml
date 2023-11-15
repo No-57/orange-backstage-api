@@ -25,5 +25,8 @@ db:
   host: 127.0.0.1
   port: 5432
   name: orange
-  user: backstage
+  user: dev
   password:
+  ssl_mode: disable
+  timezone: Asia/Taipei
+  verbose: false

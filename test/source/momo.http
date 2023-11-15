@@ -1,0 +1,16 @@
+POST https://m.momoshop.com.tw/ajax/ajaxTool.jsp
+?n=getRecomdBlock
+&t=1697462213293
+Content-Type: application/x-www-form-urlencoded
+
+data=%7B%22flag%22%3A%22getRecomdBlock%22%2C%22data%22%3A%7B%22arrBlockId%22%3A%5B%22bt_7_602_01%22%2C%22bt_7_603_01%22%2C%22bt_7_605_01%22%5D%2C%22categoryCode%22%3A%224202700000%22%7D%7D
+
+###
+
+POST https://www.momoshop.com.tw/ajax/ajaxTool.jsp
+?n=2002
+&t=1697899313293
+Content-Type: application/x-www-form-urlencoded; charset=UTF-8
+Referer: https://www.momoshop.com.tw
+
+data=%7B%22flag%22%3A2002%2C%22data%22%3A%7B%22promo_yn%22%3A%22Y%22%2C%22goodsCode%22%3A%5B%229816873%22%2C%2210455023%22%2C%229986784%22%2C%2210138660%22%2C%2210812655%22%2C%2211546660%22%2C%229658301%22%2C%2210147170%22%2C%225913913%22%2C%2210313625%22%2C%229032698%22%2C%2211508318%22%5D%2C%22O_image_yn%22%3A%22N%22%2C%22isNotCallGetGoodsPromoIcon%22%3A%22Y%22%7D%7D

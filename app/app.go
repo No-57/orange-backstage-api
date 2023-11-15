@@ -6,6 +6,7 @@ import (
 	"io"
 	"orange-backstage-api/app/router"
 	"orange-backstage-api/app/server"
+	"orange-backstage-api/app/service"
 	"orange-backstage-api/app/store"
 	"orange-backstage-api/app/usecase"
 	"orange-backstage-api/infra/config"
@@ -26,8 +27,9 @@ type App struct {
 	cfg config.App
 	log Logger
 
-	store  *store.Store
-	server *server.Server
+	store   *store.Store
+	server  *server.Server
+	service *service.Service
 }
 
 func New(ctx context.Context, name string, cfg config.App) (*App, error) {
@@ -48,6 +50,8 @@ func New(ctx context.Context, name string, cfg config.App) (*App, error) {
 			Password: cfg.DB.Password,
 			DBName:   cfg.DB.Name,
 			Port:     cfg.DB.Port,
+			SSLMode:  cfg.DB.SSLMode,
+			TimeZone: cfg.DB.TimeZone,
 		},
 		Verbose: cfg.DB.Verbose,
 	})
@@ -59,6 +63,8 @@ func New(ctx context.Context, name string, cfg config.App) (*App, error) {
 	usecase := usecase.New(app.store, usecase.Config{
 		JWT: cfg.Server.JWT,
 	})
+
+	app.service = service.New(usecase)
 
 	router := router.New(app.ctx, usecase, router.Param{
 		Version:   "v1",
@@ -154,6 +160,14 @@ func (app *App) Run() error {
 		log.Info().Msg("stopped")
 
 		return nil
+	})
+
+	g.Go(func() error {
+		log := app.log.With().Str("component", "service").Logger()
+
+		log.Info().Msg("running")
+		defer log.Info().Msg("stopped")
+		return app.service.Run(app.ctx)
 	})
 
 	if err := g.Wait(); err != nil {

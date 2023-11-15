@@ -20,6 +20,10 @@ func NewMock(size int) *Mock {
 
 var _ Crawler = (*Mock)(nil)
 
+func (m *Mock) SellerType() SellerType {
+	return SellerTypeOther
+}
+
 func (m *Mock) Fetch(ctx context.Context) ([]Product, error) {
 	fakeProducts := make([]Product, 0, m.size)
 
