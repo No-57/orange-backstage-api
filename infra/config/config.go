@@ -50,6 +50,8 @@ type DB struct {
 	Name     string `mapstructure:"name"`
 	User     string `mapstructure:"user"`
 	Password string `mapstructure:"password"`
+	SSLMode  string `mapstructure:"ssl_mode"`
+	TimeZone string `mapstructure:"timezone"`
 
 	Verbose bool `mapstructure:"verbose"`
 }

@@ -11,6 +11,8 @@ type Crawler interface {
 	// Fetch fetches products from the source.
 	// TODO: More details about the source and conditions.
 	Fetch(context.Context) ([]Product, error)
+
+	SellerType() SellerType
 }
 
 type ProductType int
@@ -34,7 +36,27 @@ const (
 	SellerTypeAmazon
 	SellerTypeYahoo
 	SellerTypeOther
+	SellerTypeMOMO
 )
+
+func (st SellerType) String() string {
+	switch st {
+	case SellerTypePCHome:
+		return "PCHOME"
+	case SellerTypeShopee:
+		return "SHOPEE"
+	case SellerTypeAmazon:
+		return "AMAZON"
+	case SellerTypeYahoo:
+		return "YAHOO"
+	case SellerTypeOther:
+		return "OTHER"
+	case SellerTypeMOMO:
+		return "MOMO"
+	default:
+		return "Unknown"
+	}
+}
 
 type Product struct {
 	ProductPrice

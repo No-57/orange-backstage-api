@@ -16,6 +16,7 @@ type Store struct {
 
 	Account *Account
 	Auth    *Auth
+	Product *Product
 }
 
 type Engine string
@@ -60,6 +61,7 @@ func New(param Param) (*Store, error) {
 
 		Account: &Account{db: db},
 		Auth:    &Auth{db: db},
+		Product: &Product{db: db},
 	}, nil
 }
 
