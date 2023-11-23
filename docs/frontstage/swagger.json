@@ -7,7 +7,7 @@
         "version": "0.1.0"
     },
     "host": "localhost:8080",
-    "basePath": "/v1",
+    "basePath": "/api/v1",
     "paths": {
         "/products": {
             "get": {
@@ -55,7 +55,7 @@
                     },
                     {
                         "type": "string",
-                        "description": "fields to show, split by comma, Default: all fields",
+                        "description": "fields to show, split by comma. Default: all fields",
                         "name": "fields",
                         "in": "query"
                     }
