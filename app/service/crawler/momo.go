@@ -3,6 +3,7 @@ package crawler
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"log"
@@ -98,20 +99,25 @@ func (m *Momo) Fetch(ctx context.Context) ([]Product, error) {
 	for _, block := range resp.RtnData.BlockData {
 		for _, group := range block.Group {
 			for _, good := range group.Goods {
-				showPrice := strings.ReplaceAll(good.ShowPrice, ",", "")
-				if showPrice == "" {
-					continue
+				price, err := momoPriceToDecimal(good.ShowPrice)
+				if err != nil {
+					if errors.Is(err, errNoPrice) {
+						// ignore the product without price because of it is useless for us.
+						continue
+					}
+					log.Println("failed to parse price:", err)
 				}
 
-				price, err := decimal.NewFromString(showPrice)
-				if err != nil {
-					log.Println("failed to parse price:", err)
-					price = decimal.Zero
+				var discount decimal.Decimal
+				marketPrice, err := momoPriceToDecimal(good.MarketPrice)
+				if err == nil { // Market price available.
+					discount = marketPrice.Sub(price)
 				}
 
 				products = append(products, Product{
 					ProductPrice: ProductPrice{
 						Price:      price,
+						Discount:   discount,
 						SourceURL:  good.URL,
 						SellerType: SellerTypeMOMO,
 					},
@@ -166,4 +172,15 @@ func readToMOMOResp(reader io.Reader) (*MOMOResp, error) {
 		return nil, fmt.Errorf("failed to decode response: %w", err)
 	}
 	return &resp, nil
+}
+
+var errNoPrice = fmt.Errorf("no price")
+
+func momoPriceToDecimal(price string) (decimal.Decimal, error) {
+	price = strings.ReplaceAll(price, ",", "")
+	if price == "" {
+		return decimal.Zero, errNoPrice
+	}
+
+	return decimal.NewFromString(price)
 }
