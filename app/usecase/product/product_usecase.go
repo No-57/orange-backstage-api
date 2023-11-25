@@ -24,6 +24,7 @@ func (u *Usecase) UpsertProduct(ctx context.Context, newProduct crawler.Product)
 	pprice := &product.Price{
 		Price:      newProduct.Price,
 		SellerType: crawler.SellerTypeMOMO.String(),
+		Discount:   newProduct.Discount,
 		SourceURL:  newProduct.SourceURL,
 	}
 
