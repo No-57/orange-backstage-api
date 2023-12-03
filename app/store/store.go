@@ -2,8 +2,10 @@ package store
 
 import (
 	"fmt"
+	"orange-backstage-api/app/model"
 	"orange-backstage-api/app/store/account"
 	"orange-backstage-api/app/store/auth"
+	"orange-backstage-api/app/store/product"
 	"orange-backstage-api/infra/util/convert"
 
 	"golang.org/x/crypto/bcrypt"
@@ -14,9 +16,9 @@ import (
 type Store struct {
 	db *gorm.DB
 
-	Account *Account
-	Auth    *Auth
-	Product *Product
+	Account *account.Store
+	Auth    *auth.Store
+	Product *product.Store
 }
 
 type Engine string
@@ -59,16 +61,20 @@ func New(param Param) (*Store, error) {
 	return &Store{
 		db: db,
 
-		Account: &Account{db: db},
-		Auth:    &Auth{db: db},
-		Product: &Product{db: db},
+		Account: account.New(db),
+		Auth:    auth.New(db),
+		Product: product.New(db),
 	}, nil
 }
 
 func migrate(db *gorm.DB) error {
 	if err := db.AutoMigrate(
-		&account.Account{},
-		&auth.Token{},
+		&model.Account{},
+		&model.Token{},
+		&model.Theme{},
+		&model.Board{},
+		&model.Distributor{},
+		&model.ProductPriority{},
 	); err != nil {
 		return err
 	}
@@ -83,7 +89,7 @@ func seed(db *gorm.DB) error {
 		return fmt.Errorf("generate hashed password: %w", err)
 	}
 
-	rootAcc := &account.Account{
+	rootAcc := &model.Account{
 		Email:          "admin@orange.com.tw",
 		Name:           "admin",
 		HashedPassword: hashedPass,

@@ -2,7 +2,7 @@ package middleware
 
 import (
 	"errors"
-	"orange-backstage-api/app/store/account"
+	"orange-backstage-api/app/model"
 	"orange-backstage-api/infra/api"
 	"strings"
 
@@ -18,13 +18,13 @@ func JWTChceker(secret []byte) gin.HandlerFunc {
 
 	return func(c *gin.Context) {
 		if value, ok := c.Get(api.AuthCtxKey); ok {
-			if _, ok := value.(*account.Claims); ok {
+			if _, ok := value.(*model.Claims); ok {
 				c.Next()
 				return
 			}
 		}
 
-		api := api.New(c)
+		api := api.NewCtx(c)
 		if api.Auth().Exists() {
 			c.Next()
 			return
@@ -43,9 +43,9 @@ func JWTChceker(secret []byte) gin.HandlerFunc {
 			return
 		}
 
-		claims, err := account.ParseTokenWithSecret(secret, token)
+		claims, err := model.ParseTokenWithSecret(secret, token)
 		if err != nil {
-			if errors.Is(err, account.ErrExpired) {
+			if errors.Is(err, model.ErrExpired) {
 				api.Resp().ExpiredToken(err)
 				return
 			}

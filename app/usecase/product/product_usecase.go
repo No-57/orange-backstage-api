@@ -2,9 +2,9 @@ package product
 
 import (
 	"context"
+	"orange-backstage-api/app/model"
 	"orange-backstage-api/app/service/crawler"
 	"orange-backstage-api/app/store"
-	"orange-backstage-api/app/store/product"
 )
 
 type Usecase struct {
@@ -16,12 +16,12 @@ func New(store *store.Store) *Usecase {
 }
 
 func (u *Usecase) UpsertProduct(ctx context.Context, newProduct crawler.Product) error {
-	p := &product.Product{
+	p := &model.Product{
 		Name:  newProduct.Name,
-		Types: product.Laptop,
+		Types: model.Laptop,
 	}
 
-	pprice := &product.Price{
+	pprice := &model.Price{
 		Price:      newProduct.Price,
 		SellerType: crawler.SellerTypeMOMO.String(),
 		Discount:   newProduct.Discount,

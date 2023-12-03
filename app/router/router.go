@@ -81,9 +81,9 @@ func health(c *gin.Context) {
 		Time   time.Time `json:"time" example:"2021-01-01T00:00:00+08:00"`
 	}
 
-	api := api.New(c)
+	ctx := api.NewCtx(c)
 
-	api.Resp().Data(resp{
+	ctx.Resp().Data(resp{
 		Health: "ok",
 		Time:   time.Now().Local(),
 	})

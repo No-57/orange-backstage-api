@@ -45,24 +45,24 @@ type LoginResp struct {
 //	@Failure		500		{object}	api.ErrResp
 //	@Router			/login [post]
 func (r Router) Login(c *gin.Context) {
-	api := api.New(c)
+	ctx := api.NewCtx(c)
 
 	var payload LoginPayload
 	if err := c.ShouldBindJSON(&payload); err != nil {
-		api.Resp().InvalidParam(err)
+		ctx.Resp().InvalidParam(err)
 		return
 	}
 
-	token, err := r.usecase.Login(api.Ctx(), auth.LoginParam{
+	token, err := r.usecase.Login(ctx, auth.LoginParam{
 		Target:   payload.Target,
 		Password: payload.Password,
 	})
 	if err != nil {
-		api.Resp().Err(err)
+		ctx.Resp().Err(err)
 		return
 	}
 
-	api.Resp().Data(LoginResp{
+	ctx.Resp().Data(LoginResp{
 		AccessToken:  token.AccessToken,
 		RefreshToken: token.RefreshToken,
 	})
@@ -86,23 +86,23 @@ type UpdateTokenPayload struct {
 //	@Failure		500		{object}	api.ErrResp
 //	@Router			/token [patch]
 func (r Router) UpdateToken(c *gin.Context) {
-	api := api.New(c)
+	ctx := api.NewCtx(c)
 
 	var payload UpdateTokenPayload
 	if err := c.ShouldBindJSON(&payload); err != nil {
-		api.Resp().InvalidParam(err)
+		ctx.Resp().InvalidParam(err)
 		return
 	}
 
-	token, err := r.usecase.UpdateToken(api.Ctx(), auth.UpdateTokenParam{
+	token, err := r.usecase.UpdateToken(ctx, auth.UpdateTokenParam{
 		RToken: payload.RefreshToken,
 	})
 	if err != nil {
-		api.Resp().Err(err)
+		ctx.Resp().Err(err)
 		return
 	}
 
-	api.Resp().Data(LoginResp{
+	ctx.Resp().Data(LoginResp{
 		AccessToken:  token.AccessToken,
 		RefreshToken: token.RefreshToken,
 	})
