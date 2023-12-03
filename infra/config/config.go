@@ -19,6 +19,7 @@ type Server struct {
 	CertFilePath string        `mapstructure:"cert_file_path"`
 	KeyFilePath  string        `mapstructure:"key_file_path"`
 	EnableDoc    bool          `mapstructure:"enable_doc"`
+	UploadPath   string        `mapstructure:"upload_path"`
 
 	JWT JWT `mapstructure:"jwt"`
 }

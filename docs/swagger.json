@@ -9,6 +9,169 @@
     "host": "localhost:8080",
     "basePath": "/api/v1",
     "paths": {
+        "/boards": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "List boards",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "board"
+                ],
+                "summary": "List boards",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/api.DataResp"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/board.ListItem"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrResp"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrResp"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Create board with image",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "board"
+                ],
+                "summary": "Create board",
+                "parameters": [
+                    {
+                        "type": "file",
+                        "description": "image file",
+                        "name": "file",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "name": "action",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "name": "action_type",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "name": "code",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.DataResp"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrResp"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrResp"
+                        }
+                    }
+                }
+            }
+        },
+        "/boards/{id}": {
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Delete board",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "board"
+                ],
+                "summary": "Delete board",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "board id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.DataResp"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrResp"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrResp"
+                        }
+                    }
+                }
+            }
+        },
         "/health": {
             "get": {
                 "description": "Health Check",
@@ -39,6 +202,44 @@
                         "description": "Internal Server Error",
                         "schema": {
                             "$ref": "#/definitions/api.ErrResp"
+                        }
+                    }
+                }
+            }
+        },
+        "/images/{name}": {
+            "get": {
+                "description": "Get image by name",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "image"
+                ],
+                "summary": "Get image",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "image name",
+                        "name": "name",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "file"
+                        }
+                    },
+                    "404": {
+                        "description": "404 page not found",
+                        "schema": {
+                            "type": "string"
                         }
                     }
                 }
@@ -247,12 +448,14 @@
                 101002,
                 101003,
                 101004,
+                101005,
                 102000
             ],
             "x-enum-comments": {
                 "CodeAPINotFound": "101003",
                 "CodeForbidden": "101004",
                 "CodeInvalidParam": "101002",
+                "CodeNotFound": "101005",
                 "CodeOK": "101000",
                 "CodeTokenExpired": "102000",
                 "CodeUnknown": "101001"
@@ -263,6 +466,7 @@
                 "CodeInvalidParam",
                 "CodeAPINotFound",
                 "CodeForbidden",
+                "CodeNotFound",
                 "CodeTokenExpired"
             ]
         },
@@ -334,6 +538,32 @@
             ],
             "properties": {
                 "refresh_token": {
+                    "type": "string"
+                }
+            }
+        },
+        "board.ListItem": {
+            "type": "object",
+            "properties": {
+                "action": {
+                    "type": "string"
+                },
+                "action_type": {
+                    "type": "string"
+                },
+                "code": {
+                    "type": "string"
+                },
+                "created_date": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "image_url": {
+                    "type": "string"
+                },
+                "updated_date": {
                     "type": "string"
                 }
             }

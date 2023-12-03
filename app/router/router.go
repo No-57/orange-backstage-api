@@ -4,6 +4,8 @@ import (
 	"context"
 	"orange-backstage-api/app/router/account"
 	"orange-backstage-api/app/router/auth"
+	"orange-backstage-api/app/router/board"
+	"orange-backstage-api/app/router/image"
 	"orange-backstage-api/app/router/middleware"
 	"orange-backstage-api/app/usecase"
 	"orange-backstage-api/infra/api"
@@ -21,25 +23,34 @@ type Router struct {
 	ctx       context.Context
 	version   string
 	enableDoc bool
+	param     Param
 
 	auth    *auth.Router
 	account *account.Router
+	board   *board.Router
+	image   *image.Router
 }
 
 type Param struct {
-	Version   string
-	JWT       config.JWT
-	EnableDoc bool
+	Version         string
+	JWT             config.JWT
+	EnableDoc       bool
+	ImageUploadPath string
 }
 
 func New(ctx context.Context, usecase *usecase.Usecase, param Param) *Router {
 	return &Router{
 		ctx:     ctx,
 		version: param.Version,
+		param:   param,
 
 		auth: auth.New(usecase.Auth),
 		account: account.New(usecase.Account, account.Config{
 			JWT: param.JWT,
+		}),
+		board: board.New(usecase.Board),
+		image: image.New(image.Param{
+			UploadPath: param.ImageUploadPath,
 		}),
 
 		enableDoc: param.EnableDoc,
@@ -54,10 +65,14 @@ func (r *Router) Register(ginR gin.IRouter) {
 	api := ginR.Group("/api", generalMiddlewares(r.ctx)...)
 	ver := api.Group("/" + r.version)
 
+	r.image.Register(ver)
 	ver.GET("/health", health)
 
 	r.auth.Register(ver)
 	r.account.Register(ver)
+
+	auth := ver.Group("", middleware.JWTChceker(r.param.JWT.SecretBytes()))
+	r.board.Register(auth)
 }
 
 func (r *Router) registerSwagger(ginR gin.IRouter) {

@@ -8,6 +8,7 @@ const (
 	CodeInvalidParam                      // 101002
 	CodeAPINotFound                       // 101003
 	CodeForbidden                         // 101004
+	CodeNotFound                          // 101005
 )
 
 const (
@@ -17,7 +18,7 @@ const (
 var _messages = map[Code]string{
 	CodeOK:           "ok",
 	CodeUnknown:      "unknown error",
-	CodeInvalidParam: "invalid paramater",
+	CodeInvalidParam: "invalid parameter",
 	CodeAPINotFound:  "API not found",
 }
 

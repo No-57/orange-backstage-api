@@ -2,6 +2,7 @@ package api
 
 import (
 	"context"
+	"net/http"
 	"orange-backstage-api/app/model"
 
 	"github.com/gin-gonic/gin"
@@ -14,9 +15,10 @@ type Context struct {
 	context.Context
 	c *gin.Context
 
-	log  *zerolog.Logger
-	resp *resp
-	auth auth
+	log   *zerolog.Logger
+	param *param
+	resp  *resp
+	auth  auth
 }
 
 func NewCtx(c *gin.Context) *Context {
@@ -33,24 +35,53 @@ func NewCtx(c *gin.Context) *Context {
 		c:   c,
 		log: &log,
 
-		resp: newResp(c, log),
-		auth: newAuth(c),
+		param: newParam(c),
+		resp:  newResp(c, log),
+		auth:  newAuth(c),
 	}
 	defer c.Set(APICtxKey, ctx)
 
 	return ctx
 }
 
-func (api *Context) Resp() *resp {
-	return api.resp
+func (ctx *Context) Param() *param {
+	return ctx.param
 }
 
-func (api *Context) Auth() auth {
-	return api.auth
+func (ctx *Context) Resp() *resp {
+	return ctx.resp
 }
 
-func (api *Context) UpdateAuth(claims *model.Claims) {
-	defer api.c.Set(APICtxKey, api)
+func (ctx *Context) Auth() auth {
+	return ctx.auth
+}
 
-	api.auth.Update(claims)
+func (ctx *Context) UpdateAuth(claims *model.Claims) {
+	defer ctx.c.Set(APICtxKey, ctx)
+
+	ctx.auth.Update(claims)
+}
+
+func (ctx *Context) ShouldBind(obj interface{}) error {
+	if err := ctx.c.ShouldBind(obj); err != nil {
+		return NewParamErr(err)
+	}
+
+	return nil
+}
+
+func (ctx *Context) ShouldBindJSON(obj interface{}) error {
+	if err := ctx.c.ShouldBindJSON(obj); err != nil {
+		return NewParamErr(err)
+	}
+
+	return nil
+}
+
+func (ctx *Context) ShouldBindUri(obj interface{}) error {
+	if err := ctx.c.ShouldBindUri(obj); err != nil {
+		return NewHTTPErr(http.StatusNotFound, CodeAPINotFound, err)
+	}
+
+	return nil
 }

@@ -34,6 +34,9 @@ func (s *Server) Serve() error {
 	gin.SetMode(s.cfg.RunMode)
 
 	r := gin.New()
+
+	r.MaxMultipartMemory = 10 << 20 // 10 MiB
+
 	s.router.Register(r)
 	s.http.Handler = r
 
