@@ -1,7 +1,7 @@
 package api
 
 import (
-	"orange-backstage-api/app/store/account"
+	"orange-backstage-api/app/model"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -10,7 +10,7 @@ import (
 const AuthCtxKey = "auth"
 
 type auth struct {
-	claims *account.Claims
+	claims *model.Claims
 
 	accID uint64
 }
@@ -23,7 +23,7 @@ func newAuth(c *gin.Context) auth {
 		return auth
 	}
 
-	claims, ok := value.(*account.Claims)
+	claims, ok := value.(*model.Claims)
 	if !ok {
 		return auth
 	}
@@ -42,7 +42,7 @@ func (a auth) Exists() bool {
 	return a.claims != nil
 }
 
-func (a *auth) Update(claims *account.Claims) {
+func (a *auth) Update(claims *model.Claims) {
 	a.claims = claims
 }
 

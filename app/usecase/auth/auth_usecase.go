@@ -5,8 +5,8 @@ import (
 	"crypto/sha256"
 	"errors"
 	"fmt"
+	"orange-backstage-api/app/model"
 	"orange-backstage-api/app/store"
-	"orange-backstage-api/app/store/auth"
 	"orange-backstage-api/infra/config"
 	"time"
 
@@ -60,7 +60,7 @@ func (u *Usecase) Login(
 	}
 	refreshToken := geneRefreshToken()
 
-	if err := u.store.Auth.CreateToken(ctx, &auth.Token{
+	if err := u.store.Auth.CreateToken(ctx, &model.Token{
 		AccountID:    account.ID,
 		AccessToken:  accessToken,
 		RefreshToken: refreshToken,

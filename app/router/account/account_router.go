@@ -55,16 +55,16 @@ type SelfResp struct {
 //	@Failure		500	{object}	api.ErrResp
 //	@Router			/self [get]
 func (r Router) Self(c *gin.Context) {
-	api := api.New(c)
+	ctx := api.NewCtx(c)
 
-	accID := api.Auth().AccID()
-	acc, err := r.usecase.Self(api.Ctx(), account.SelfParam{ID: accID})
+	accID := ctx.Auth().AccID()
+	acc, err := r.usecase.Self(ctx, account.SelfParam{ID: accID})
 	if err != nil {
-		api.Resp().Err(err)
+		ctx.Resp().Err(err)
 		return
 	}
 
-	api.Resp().Data(SelfResp{
+	ctx.Resp().Data(SelfResp{
 		ID:        acc.ID,
 		Email:     acc.Email,
 		Name:      acc.Name,
