@@ -44,3 +44,11 @@ func (p Price) TableName() string {
 	return "price"
 }
 
+type ProductPriority struct {
+	ID        uint64    `gorm:"column:id;type:serial;primaryKey"`
+	Code      string    `gorm:"column:code;NOT NULL"`
+	ProductID uint64    `gorm:"column:product_id;NOT NULL"`
+	Priority  uint64    `gorm:"column:priority;NOT NULL"`
+	CreatedAt time.Time `gorm:"column:created_date;NOT NULL"`
+	UpdatedAt time.Time `gorm:"column:updated_date;NOT NULL"`
+}
