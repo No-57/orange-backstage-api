@@ -214,12 +214,14 @@
                 101002,
                 101003,
                 101004,
+                101005,
                 102000
             ],
             "x-enum-comments": {
                 "CodeAPINotFound": "101003",
                 "CodeForbidden": "101004",
                 "CodeInvalidParam": "101002",
+                "CodeNotFound": "101005",
                 "CodeOK": "101000",
                 "CodeTokenExpired": "102000",
                 "CodeUnknown": "101001"
@@ -230,6 +232,7 @@
                 "CodeInvalidParam",
                 "CodeAPINotFound",
                 "CodeForbidden",
+                "CodeNotFound",
                 "CodeTokenExpired"
             ]
         },

@@ -37,3 +37,50 @@ Authorization: Bearer {{aToken}}
 {
   "refresh_token": "{{rToken}}"
 }
+
+
+### Boards
+
+# @name boards
+GET {{v1}}/boards
+Host: {{host}}
+Authorization: Bearer {{aToken}}
+
+###
+
+@image_url = {{boards.response.body.data.0.image_url}}
+@board_id = {{boards.response.body.data.0.id}}
+
+###
+
+GET http://{{image_url}}
+
+
+###
+
+POST {{v1}}/boards
+Host: {{host}}
+Authorization: Bearer {{aToken}}
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="data"
+Content-Type: application/json
+
+{
+  "code": "test",
+  "action_type": "test_action_type",
+  "action": "test_action"
+}
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="file"; filename="1.png"
+Content-Type: image/png
+
+< ../../debug/image.png
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+###
+
+DELETE {{v1}}/boards/{{board_id}}
+Host: {{host}}
+Authorization: Bearer {{aToken}}

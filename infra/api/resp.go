@@ -80,6 +80,10 @@ func (r *resp) Err(err error) {
 	r.sendErr(http.StatusInternalServerError, CodeUnknown, err)
 }
 
+func (r *resp) NotFound() {
+	r.sendErr(http.StatusNotFound, CodeNotFound, nil)
+}
+
 func (r *resp) Forbidden(err error) {
 	r.sendErr(http.StatusForbidden, CodeForbidden, err)
 }
@@ -92,7 +96,7 @@ func (r *resp) ExpiredToken(err error) {
 	r.sendErr(http.StatusUnauthorized, CodeTokenExpired, err)
 }
 
-func (r *resp) DBErr(err error) {
+func (r *resp) dbErr(err error) {
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		r.sendErr(http.StatusBadRequest, CodeInvalidParam, err)
 		return
@@ -107,6 +111,24 @@ func (r *resp) InvalidParam(err error) {
 
 func (r *resp) Unknown(err error) {
 	r.sendErr(http.StatusInternalServerError, CodeUnknown, err)
+}
+
+func (r *resp) HandleErr(err error) {
+	var (
+		storeErr *StoreErr
+		paramErr *ParamErr
+		httpErr  *HTTPErr
+	)
+	switch {
+	case errors.As(err, &storeErr):
+		r.dbErr(storeErr)
+	case errors.As(err, &paramErr):
+		r.sendErr(http.StatusBadRequest, CodeInvalidParam, paramErr)
+	case errors.As(err, &httpErr):
+		r.sendErr(httpErr.HTTPCode, httpErr.Code, httpErr)
+	default:
+		r.Unknown(err)
+	}
 }
 
 //

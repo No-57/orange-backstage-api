@@ -20,12 +20,14 @@ definitions:
     - 101002
     - 101003
     - 101004
+    - 101005
     - 102000
     type: integer
     x-enum-comments:
       CodeAPINotFound: "101003"
       CodeForbidden: "101004"
       CodeInvalidParam: "101002"
+      CodeNotFound: "101005"
       CodeOK: "101000"
       CodeTokenExpired: "102000"
       CodeUnknown: "101001"
@@ -35,6 +37,7 @@ definitions:
     - CodeInvalidParam
     - CodeAPINotFound
     - CodeForbidden
+    - CodeNotFound
     - CodeTokenExpired
   api.DataResp:
     properties:
@@ -81,6 +84,23 @@ definitions:
     required:
     - refresh_token
     type: object
+  board.ListItem:
+    properties:
+      action:
+        type: string
+      action_type:
+        type: string
+      code:
+        type: string
+      created_date:
+        type: string
+      id:
+        type: integer
+      image_url:
+        type: string
+      updated_date:
+        type: string
+    type: object
   router.health.resp:
     properties:
       health:
@@ -97,6 +117,107 @@ info:
   title: Orange Backstage API Document
   version: 0.1.0
 paths:
+  /boards:
+    get:
+      description: List boards
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/api.DataResp'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/board.ListItem'
+                  type: array
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.ErrResp'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.ErrResp'
+      security:
+      - BearerAuth: []
+      summary: List boards
+      tags:
+      - board
+    post:
+      consumes:
+      - multipart/form-data
+      description: Create board with image
+      parameters:
+      - description: image file
+        in: formData
+        name: file
+        required: true
+        type: file
+      - in: formData
+        name: action
+        required: true
+        type: string
+      - in: formData
+        name: action_type
+        required: true
+        type: string
+      - in: formData
+        name: code
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.DataResp'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.ErrResp'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.ErrResp'
+      security:
+      - BearerAuth: []
+      summary: Create board
+      tags:
+      - board
+  /boards/{id}:
+    delete:
+      description: Delete board
+      parameters:
+      - description: board id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.DataResp'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.ErrResp'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.ErrResp'
+      security:
+      - BearerAuth: []
+      summary: Delete board
+      tags:
+      - board
   /health:
     get:
       consumes:
@@ -120,6 +241,31 @@ paths:
       summary: Health Check
       tags:
       - health
+  /images/{name}:
+    get:
+      consumes:
+      - application/json
+      description: Get image by name
+      parameters:
+      - description: image name
+        in: path
+        name: name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: file
+        "404":
+          description: 404 page not found
+          schema:
+            type: string
+      summary: Get image
+      tags:
+      - image
   /login:
     post:
       consumes:

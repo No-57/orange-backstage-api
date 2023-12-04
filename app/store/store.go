@@ -5,6 +5,7 @@ import (
 	"orange-backstage-api/app/model"
 	"orange-backstage-api/app/store/account"
 	"orange-backstage-api/app/store/auth"
+	"orange-backstage-api/app/store/board"
 	"orange-backstage-api/app/store/product"
 	"orange-backstage-api/infra/util/convert"
 
@@ -13,12 +14,17 @@ import (
 	"gorm.io/gorm/clause"
 )
 
+var (
+	ErrRecordNotFound = gorm.ErrRecordNotFound
+)
+
 type Store struct {
 	db *gorm.DB
 
 	Account *account.Store
 	Auth    *auth.Store
 	Product *product.Store
+	Board   *board.Store
 }
 
 type Engine string
@@ -64,6 +70,7 @@ func New(param Param) (*Store, error) {
 		Account: account.New(db),
 		Auth:    auth.New(db),
 		Product: product.New(db),
+		Board:   board.New(db),
 	}, nil
 }
 

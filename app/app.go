@@ -60,16 +60,23 @@ func New(ctx context.Context, name string, cfg config.App) (*App, error) {
 	}
 	app.store = store
 
+	uploadPath := cfg.Server.UploadPath
+	if uploadPath == "" {
+		uploadPath = filepath.Join(os.TempDir(), "orange-backstage-api", "upload")
+	}
+
 	usecase := usecase.New(app.store, usecase.Config{
-		JWT: cfg.Server.JWT,
+		JWT:             cfg.Server.JWT,
+		ImageUploadPath: uploadPath,
 	})
 
 	app.service = service.New(usecase)
 
 	router := router.New(app.ctx, usecase, router.Param{
-		Version:   "v1",
-		JWT:       cfg.Server.JWT,
-		EnableDoc: cfg.Server.EnableDoc,
+		Version:         "v1",
+		JWT:             cfg.Server.JWT,
+		EnableDoc:       cfg.Server.EnableDoc,
+		ImageUploadPath: uploadPath,
 	})
 
 	app.server = server.New(router, app.cfg.Server)
