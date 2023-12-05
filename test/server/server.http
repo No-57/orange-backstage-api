@@ -110,6 +110,6 @@ Authorization: Bearer {{aToken}}
 
 ###
 
-DELETE {{v1}}/theme/{{theme_id}}
+DELETE {{v1}}/themes/{{theme_id}}
 Host: {{host}}
 Authorization: Bearer {{aToken}}

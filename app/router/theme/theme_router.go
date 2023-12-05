@@ -19,7 +19,7 @@ func New(usecase *theme.Usecase) *Router {
 func (r *Router) Register(router *gin.RouterGroup) {
 	router.GET("/themes", r.List)
 	router.POST("/themes", r.Create)
-	router.DELETE("/theme/:id", r.Delete)
+	router.DELETE("/themes/:id", r.Delete)
 }
 
 type ListItem struct {
@@ -117,7 +117,7 @@ func (r *Router) Create(c *gin.Context) {
 //	@Success		200	{object}	api.CodeResp
 //	@Failure		400	{object}	api.ErrResp
 //	@Failure		500	{object}	api.ErrResp
-//	@Router			/theme/{id} [delete]
+//	@Router			/themes/{id} [delete]
 func (r *Router) Delete(c *gin.Context) {
 	ctx := api.NewCtx(c)
 
