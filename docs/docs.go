@@ -114,7 +114,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/api.DataResp"
+                            "$ref": "#/definitions/api.CodeResp"
                         }
                     },
                     "400": {
@@ -160,7 +160,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/api.DataResp"
+                            "$ref": "#/definitions/api.CodeResp"
                         }
                     },
                     "400": {
@@ -361,6 +361,153 @@ const docTemplate = `{
                 }
             }
         },
+        "/theme/{id}": {
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Delete theme",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "theme"
+                ],
+                "summary": "Delete theme",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "theme id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.CodeResp"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrResp"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrResp"
+                        }
+                    }
+                }
+            }
+        },
+        "/themes": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "List themes",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "theme"
+                ],
+                "summary": "List themes",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/api.DataResp"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/theme.ListItem"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrResp"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrResp"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Create theme",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "theme"
+                ],
+                "summary": "Create theme",
+                "parameters": [
+                    {
+                        "description": "body",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/theme.CreateReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.CodeResp"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrResp"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrResp"
+                        }
+                    }
+                }
+            }
+        },
         "/token": {
             "patch": {
                 "security": [
@@ -476,6 +623,20 @@ const docTemplate = `{
                 "CodeTokenExpired"
             ]
         },
+        "api.CodeResp": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "description": "e.CodeSuccess",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/api.Code"
+                        }
+                    ],
+                    "example": 101001
+                }
+            }
+        },
         "api.DataResp": {
             "type": "object",
             "properties": {
@@ -584,6 +745,47 @@ const docTemplate = `{
                 "time": {
                     "type": "string",
                     "example": "2021-01-01T00:00:00+08:00"
+                }
+            }
+        },
+        "theme.CreateReq": {
+            "type": "object",
+            "required": [
+                "code",
+                "type"
+            ],
+            "properties": {
+                "code": {
+                    "type": "string"
+                },
+                "disable": {
+                    "type": "boolean"
+                },
+                "type": {
+                    "type": "string"
+                }
+            }
+        },
+        "theme.ListItem": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string"
+                },
+                "created_date": {
+                    "type": "string"
+                },
+                "disable": {
+                    "type": "boolean"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "type": {
+                    "type": "string"
+                },
+                "updated_date": {
+                    "type": "string"
                 }
             }
         }

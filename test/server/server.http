@@ -84,3 +84,32 @@ Content-Type: image/png
 DELETE {{v1}}/boards/{{board_id}}
 Host: {{host}}
 Authorization: Bearer {{aToken}}
+
+### Themes
+
+# @name themes
+GET {{v1}}/themes
+Host: {{host}}
+Authorization: Bearer {{aToken}}
+
+###
+
+@theme_id = {{themes.response.body.data.0.id}}
+
+###
+
+POST {{v1}}/themes
+Host: {{host}}
+Authorization: Bearer {{aToken}}
+
+{
+  "code": "test",
+  "type": "test_type",
+  "disable": true
+}
+
+###
+
+DELETE {{v1}}/theme/{{theme_id}}
+Host: {{host}}
+Authorization: Bearer {{aToken}}

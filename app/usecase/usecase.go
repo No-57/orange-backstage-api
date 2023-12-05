@@ -6,6 +6,7 @@ import (
 	"orange-backstage-api/app/usecase/auth"
 	"orange-backstage-api/app/usecase/board"
 	"orange-backstage-api/app/usecase/product"
+	"orange-backstage-api/app/usecase/theme"
 	"orange-backstage-api/infra/config"
 )
 
@@ -16,6 +17,7 @@ type Usecase struct {
 	Account *account.Usecase
 	Product *product.Usecase
 	Board   *board.Usecase
+	Theme   *theme.Usecase
 }
 
 type Config struct {
@@ -36,5 +38,6 @@ func New(store *store.Store, config Config) *Usecase {
 		Board: board.New(store, board.Param{
 			UploadPath: config.ImageUploadPath,
 		}),
+		Theme: theme.New(store),
 	}
 }

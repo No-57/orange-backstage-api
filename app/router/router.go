@@ -7,6 +7,7 @@ import (
 	"orange-backstage-api/app/router/board"
 	"orange-backstage-api/app/router/image"
 	"orange-backstage-api/app/router/middleware"
+	"orange-backstage-api/app/router/theme"
 	"orange-backstage-api/app/usecase"
 	"orange-backstage-api/infra/api"
 	"orange-backstage-api/infra/config"
@@ -29,6 +30,7 @@ type Router struct {
 	account *account.Router
 	board   *board.Router
 	image   *image.Router
+	theme   *theme.Router
 }
 
 type Param struct {
@@ -52,6 +54,7 @@ func New(ctx context.Context, usecase *usecase.Usecase, param Param) *Router {
 		image: image.New(image.Param{
 			UploadPath: param.ImageUploadPath,
 		}),
+		theme: theme.New(usecase.Theme),
 
 		enableDoc: param.EnableDoc,
 	}
@@ -73,6 +76,7 @@ func (r *Router) Register(ginR gin.IRouter) {
 
 	auth := ver.Group("", middleware.JWTChceker(r.param.JWT.SecretBytes()))
 	r.board.Register(auth)
+	r.theme.Register(auth)
 }
 
 func (r *Router) registerSwagger(ginR gin.IRouter) {

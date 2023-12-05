@@ -7,6 +7,7 @@ import (
 	"orange-backstage-api/app/store/auth"
 	"orange-backstage-api/app/store/board"
 	"orange-backstage-api/app/store/product"
+	"orange-backstage-api/app/store/theme"
 	"orange-backstage-api/infra/util/convert"
 
 	"golang.org/x/crypto/bcrypt"
@@ -25,6 +26,7 @@ type Store struct {
 	Auth    *auth.Store
 	Product *product.Store
 	Board   *board.Store
+	Theme   *theme.Store
 }
 
 type Engine string
@@ -71,6 +73,7 @@ func New(param Param) (*Store, error) {
 		Auth:    auth.New(db),
 		Product: product.New(db),
 		Board:   board.New(db),
+		Theme:   theme.New(db),
 	}, nil
 }
 
