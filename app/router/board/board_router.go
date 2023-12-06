@@ -99,7 +99,7 @@ type CreateReq struct {
 //	@Security		BearerAuth
 //	@Param			file	formData	file		true	"image file"
 //	@Param			data	formData	CreateJSON	true	"payload"
-//	@Success		200		{object}	api.DataResp
+//	@Success		200		{object}	api.CodeResp
 //	@Failure		400		{object}	api.ErrResp
 //	@Failure		500		{object}	api.ErrResp
 //	@Router			/boards [post]
@@ -137,7 +137,7 @@ func (r *Router) Create(c *gin.Context) {
 //	@Produce		json
 //	@Security		BearerAuth
 //	@Param			id	path		uint64	true	"board id"
-//	@Success		200	{object}	api.DataResp
+//	@Success		200	{object}	api.CodeResp
 //	@Failure		400	{object}	api.ErrResp
 //	@Failure		500	{object}	api.ErrResp
 //	@Router			/boards/{id} [delete]

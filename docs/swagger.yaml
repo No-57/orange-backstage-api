@@ -39,6 +39,14 @@ definitions:
     - CodeForbidden
     - CodeNotFound
     - CodeTokenExpired
+  api.CodeResp:
+    properties:
+      code:
+        allOf:
+        - $ref: '#/definitions/api.Code'
+        description: e.CodeSuccess
+        example: 101001
+    type: object
   api.DataResp:
     properties:
       code:
@@ -110,6 +118,33 @@ definitions:
         example: "2021-01-01T00:00:00+08:00"
         type: string
     type: object
+  theme.CreateReq:
+    properties:
+      code:
+        type: string
+      disable:
+        type: boolean
+      type:
+        type: string
+    required:
+    - code
+    - type
+    type: object
+  theme.ListItem:
+    properties:
+      code:
+        type: string
+      created_date:
+        type: string
+      disable:
+        type: boolean
+      id:
+        type: integer
+      type:
+        type: string
+      updated_date:
+        type: string
+    type: object
 host: localhost:8080
 info:
   contact: {}
@@ -175,7 +210,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/api.DataResp'
+            $ref: '#/definitions/api.CodeResp'
         "400":
           description: Bad Request
           schema:
@@ -204,7 +239,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/api.DataResp'
+            $ref: '#/definitions/api.CodeResp'
         "400":
           description: Bad Request
           schema:
@@ -331,6 +366,96 @@ paths:
       summary: Get Self
       tags:
       - account
+  /theme/{id}:
+    delete:
+      description: Delete theme
+      parameters:
+      - description: theme id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.CodeResp'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.ErrResp'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.ErrResp'
+      security:
+      - BearerAuth: []
+      summary: Delete theme
+      tags:
+      - theme
+  /themes:
+    get:
+      description: List themes
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/api.DataResp'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/theme.ListItem'
+                  type: array
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.ErrResp'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.ErrResp'
+      security:
+      - BearerAuth: []
+      summary: List themes
+      tags:
+      - theme
+    post:
+      consumes:
+      - application/json
+      description: Create theme
+      parameters:
+      - description: body
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/theme.CreateReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.CodeResp'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.ErrResp'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.ErrResp'
+      security:
+      - BearerAuth: []
+      summary: Create theme
+      tags:
+      - theme
   /token:
     patch:
       consumes:
