@@ -17,6 +17,7 @@ type Service struct {
 func New(usecase *usecase.Usecase) *Service {
 	crawlers := []crawler.Crawler{
 		crawler.NewMomo(),
+		crawler.NewPchome(),
 	}
 	return &Service{
 		crawlers,
