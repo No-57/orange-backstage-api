@@ -7,6 +7,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"net/url"
 	"orange-backstage-api/infra/util/convert"
 	"regexp"
 	"strings"
@@ -62,6 +63,8 @@ const (
 	pchomeNotebookURL = "https://24h.pchome.com.tw/cdn/region/DSAA/data&28368754"
 	pchomeTabletURL   = "https://24h.pchome.com.tw/cdn/region/DYAM/data&28368773"
 )
+
+const pchomeImgBaseURL = "https://img.pchome.com.tw/fs/"
 
 func (p *Pchome) Fetch(ctx context.Context) ([]Product, error) {
 	type fetchType []struct {
@@ -124,7 +127,16 @@ func (p *Pchome) Fetch(ctx context.Context) ([]Product, error) {
 					continue
 				}
 
+				imgURL, err := url.JoinPath(pchomeImgBaseURL, node.Img.Src)
+				if err != nil {
+					imgURL = randomImgURL
+				}
+
 				products = append(products, Product{
+					ProductImg: ProductImg{
+						URL: imgURL,
+					},
+
 					ProductPrice: ProductPrice{
 						Price:      price,
 						SourceURL:  node.Link.URL,

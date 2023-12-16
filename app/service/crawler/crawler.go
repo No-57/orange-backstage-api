@@ -7,6 +7,8 @@ import (
 	"github.com/shopspring/decimal"
 )
 
+const randomImgURL = "https://picsum.photos/200/300"
+
 type Crawler interface {
 	// Fetch fetches products from the source.
 	// TODO: More details about the source and conditions.
@@ -60,6 +62,7 @@ func (st SellerType) String() string {
 
 type Product struct {
 	ProductPrice
+	ProductImg
 
 	ID          uint64
 	Name        string
@@ -74,4 +77,8 @@ type ProductPrice struct {
 	Discount   decimal.Decimal
 	SourceURL  string
 	SellerType SellerType
+}
+
+type ProductImg struct {
+	URL string
 }

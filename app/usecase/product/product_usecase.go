@@ -28,5 +28,5 @@ func (u *Usecase) UpsertProduct(ctx context.Context, newProduct crawler.Product)
 		SourceURL:  newProduct.SourceURL,
 	}
 
-	return u.store.Product.UpsertProduct(ctx, p, pprice)
+	return u.store.Product.UpsertProduct(ctx, p, pprice, newProduct.ProductImg.URL)
 }

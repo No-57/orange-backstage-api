@@ -6,3 +6,7 @@ GET https://24h.pchome.com.tw/cdn/region/DSAA/data&28368754
 ### Tablets
 
 GET https://24h.pchome.com.tw/cdn/region/DYAM/data&28368773
+
+### Image
+
+GET https://img.pchome.com.tw/fs/img/h24/v1/layout/region/D/DSAA/20231213120049_b12-01-1000x1000.jpg
