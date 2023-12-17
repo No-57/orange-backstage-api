@@ -16,7 +16,7 @@ func New(db *gorm.DB) *Store {
 	return &Store{db: db}
 }
 
-func (s Store) UpsertProduct(ctx context.Context, product *model.Product, price *model.Price) error {
+func (s Store) UpsertProduct(ctx context.Context, product *model.Product, price *model.Price, imgULR string) error {
 	result := s.db.WithContext(ctx).Clauses(clause.OnConflict{
 		Columns:   []clause.Column{{Name: "name"}},
 		UpdateAll: true,
@@ -35,6 +35,18 @@ func (s Store) UpsertProduct(ctx context.Context, product *model.Product, price 
 		Columns:   []clause.Column{{Name: "product_id"}},
 		UpdateAll: true,
 	}).Create(price)
+	if err := result.Error; err != nil {
+		return err
+	}
+
+	img := &model.ProductImg{
+		ProductID: product.ID,
+		Path:      imgULR,
+	}
+	result = s.db.WithContext(ctx).Clauses(clause.OnConflict{
+		Columns:   []clause.Column{{Name: "product_id"}},
+		UpdateAll: true,
+	}).Create(img)
 
 	return result.Error
 }

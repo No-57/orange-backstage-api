@@ -85,6 +85,7 @@ func migrate(db *gorm.DB) error {
 		&model.Board{},
 		&model.Distributor{},
 		&model.ProductPriority{},
+		&model.ProductImg{},
 	); err != nil {
 		return err
 	}

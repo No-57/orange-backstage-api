@@ -52,3 +52,8 @@ type ProductPriority struct {
 	CreatedAt time.Time `gorm:"column:created_date;NOT NULL"`
 	UpdatedAt time.Time `gorm:"column:updated_date;NOT NULL"`
 }
+
+type ProductImg struct {
+	ProductID uint64 `gorm:"column:product_id;primaryKey;NOT NULL"`
+	Path      string `gorm:"column:path;NOT NULL"`
+}

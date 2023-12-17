@@ -115,6 +115,10 @@ func (m *Momo) Fetch(ctx context.Context) ([]Product, error) {
 				}
 
 				products = append(products, Product{
+					ProductImg: ProductImg{
+						URL: good.Img,
+					},
+
 					ProductPrice: ProductPrice{
 						Price:      price,
 						Discount:   discount,
