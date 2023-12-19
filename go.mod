@@ -80,7 +80,7 @@ require (
 	github.com/mattn/go-isatty v0.0.19 // indirect
 	github.com/rs/xid v1.5.0
 	github.com/shopspring/decimal v1.3.1
-	github.com/spf13/viper v1.18.1
+	github.com/spf13/viper v1.18.2
 	github.com/swaggo/files v1.0.1
 	github.com/swaggo/gin-swagger v1.6.0
 	golang.org/x/sync v0.5.0
