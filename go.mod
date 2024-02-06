@@ -86,6 +86,6 @@ require (
 	golang.org/x/sync v0.6.0
 	golang.org/x/sys v0.16.0 // indirect
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1
-	gorm.io/driver/postgres v1.5.4
+	gorm.io/driver/postgres v1.5.5
 	gorm.io/gorm v1.25.6
 )
