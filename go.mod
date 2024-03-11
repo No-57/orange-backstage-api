@@ -7,7 +7,7 @@ require (
 	github.com/rs/zerolog v1.32.0
 	github.com/swaggo/swag v1.16.3
 	golang.org/x/crypto v0.21.0
-	golang.org/x/net v0.21.0
+	golang.org/x/net v0.22.0
 )
 
 require (
